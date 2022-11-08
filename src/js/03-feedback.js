@@ -1,36 +1,38 @@
 import throttle from 'lodash.throttle';
 
-const email = document.querySelector('input');
-const message = document.querySelector('textarea');
-const submitButton = document.querySelector('button');
-let userData = {};
+const input = document.querySelector('input');
+const textarea = document.querySelector('textarea');
+const form = document.querySelector('form');
 
-email.addEventListener('input', throttle(onInputChange, 500));
-function onInputChange(event) {
-  evt.preventDefault();
-  localStorage.setItem('feedback-form-state', JSON.stringify(userData));
-  userData.email = event.target.value;
-  console.log(userData);
+input.addEventListener('input', throttle(onInputMessage, 500));
+textarea.addEventListener('input', throttle(onInputMessage, 500));
+form.addEventListener('submit', onSubmit);
+
+startFile();
+
+function onInputMessage() {
+  const {
+    elements: { email, message },
+  } = form;
+  const data = {
+    email: email.value,
+    message: message.value,
+  };
+  localStorage.setItem('feedback-form-state', JSON.stringify(data));
 }
 
-message.addEventListener('input', throttle(onMessageEnter, 500));
-function onMessageEnter(event) {
-  evt.preventDefault();
-  localStorage.setItem('feedback-form-state', JSON.stringify(userData));
-  userData.message = event.target.value;
-  console.log(userData);
+function onSubmit(event) {
+  event.preventDefault();
+  event.currentTarget.reset();
+  localStorage.removeItem('feedback-form-state');
 }
 
-submitButton.addEventListener('click', onButtonClick);
-function onButtonClick(event) {
-  localStorage.clear();
-}
+function startFile() {
+  const saveData = JSON.parse(localStorage.getItem('feedback-form-state'));
 
-function onPageReboot(event) {
-  if (email.value.length === 0) {
-    email.value = JSON.parse(localStorage.getItem('feedback-form-state'));
-  }
-  if (message.value === '') {
-    message.value = JSON.parse(localStorage.getItem('feedback-form-state'));
+  if (localStorage.getItem('feedback-form-state')) {
+    console.log(saveData);
+    input.value = saveData.email || '';
+    textarea.value = saveData.message;
   }
 }
