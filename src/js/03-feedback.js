@@ -4,10 +4,6 @@ const input = document.querySelector('input');
 const textarea = document.querySelector('textarea');
 const form = document.querySelector('form');
 
-const input = document.querySelector('input');
-const textarea = document.querySelector('textarea');
-const form = document.querySelector('form');
-
 input.addEventListener('input', throttle(onInputMessage, 500));
 textarea.addEventListener('input', throttle(onInputMessage, 500));
 form.addEventListener('submit', onSubmit);
