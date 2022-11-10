@@ -3,7 +3,8 @@ import throttle from 'lodash.throttle';
 const input = document.querySelector('input');
 const textarea = document.querySelector('textarea');
 const form = document.querySelector('form');
-
+const saveData = JSON.parse(localStorage.getItem('feedback-form-state'));
+ 
 input.addEventListener('input', throttle(onInputMessage, 500));
 textarea.addEventListener('input', throttle(onInputMessage, 500));
 form.addEventListener('submit', onSubmit);
@@ -25,15 +26,12 @@ function onSubmit(event) {
   event.preventDefault();
   event.currentTarget.reset();
   localStorage.removeItem('feedback-form-state');
-  console.log(saveData);
 }
 
 function startFile() {
-  const saveData = JSON.parse(localStorage.getItem('feedback-form-state'));
-
   if (localStorage.getItem('feedback-form-state')) {
     console.log(saveData);
-    input.value = saveData.email || '';
+    input.value = saveData.email;
     textarea.value = saveData.message;
   }
 }
