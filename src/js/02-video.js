@@ -4,32 +4,26 @@ import throttle from 'lodash.throttle';
 const iframe = document.querySelector('iframe');
 const player = new Player(iframe);
 
+let i = Number(localStorage.getItem('videoplayer-current-time')) || 0;
 
-const onPlay = function (data) {
-  // data is an object containing properties specific to that event
-  const time = player.getCurrentTime();
-    localStorage.setItem('videoplayer-current-time', time);
-};
-
-player.on('play', onPlay);
-// If later on you decide that you don’t need to listen for play anymore.
-player.off('play', onPlay);
-
-
+player.on(
+  'timeupdate',
+  throttle(function (event) {
+    localStorage.setItem(
+      'videoplayer-current-time',
+      JSON.stringify(event.seconds)
+    );
+  }, 1000)
+);
 
 player
-  .setCurrentTime(onPlay)
-  .then(function (seconds) {
-    Number(localStorage.getItem('videoplayer-current-time'));
-  })
+  .setCurrentTime(i)
+  .then(function (seconds) {})
   .catch(function (error) {
     switch (error.name) {
       case 'RangeError':
-        // the time was less than 0 or greater than the video’s duration
         break;
-
       default:
-        // some other error occurred
         break;
     }
   });
